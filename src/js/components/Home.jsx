@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
+
 
 const Home = () => {
     const [entry, setEntry] = useState("");
     const [tasks, setTasks] = useState([]);
+    
     const updateList = () => {
         fetch("https://playground.4geeks.com/todo/users/claudio")
         .then(response => response.json())
@@ -28,11 +32,12 @@ const Home = () => {
             
             }
         }) 
-        if (success) {
+        if (success.ok) {
             updateList()
             setEntry("")
+            console.log("Task added successfully")
         } else {
-            console.error("trouble tasking")
+            console.error("Error adding a task", error)
         }
     };
 
@@ -43,8 +48,9 @@ const Home = () => {
             headers: { "Content-Type": "application/json" },
             
         })
-        if (success) {
+        if (success.ok) {
             updateList()
+            console.log("Task removed successfully")
         } else {
             console.error("trouble deleting")
         }
@@ -61,47 +67,52 @@ const Home = () => {
             .catch(error => console.error("Error deleting tasks:", error));
     };
     
-    return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <h1 className="text-4xl font-light text-gray-400 mb-6">ToDos</h1>
-            <div className="bg-white shadow-md rounded-md w-96">
-                <div className="flex gap-2 p-4 border-b">
-                    <input 
-                        type="text" 
-                        onChange={(e) => setEntry(e.target.value)}
-                        value={entry}
-                        placeholder="Add a task"
-                        className="w-full p-2 text-lg border border-gray-300 rounded-md"
-                    />
-                    <button 
-                        onClick={addTask} 
-                        className="bg-blue-500 text-white font bold px-4 py-2 rounded-md hover:bg-blue-600 transition"
-                    >
-                        Add Task
-                    </button>
-                </div>
+    
 
-                <ul className="divide-y divide-gray-200">
-                    {tasks.map((task, index) => (
-                        <li key={index} className="flex items-center justify-between p-4">
-                            <span className="text-lg text-gray-700">{task.label}</span>                            
-                            <span onClick={() => removeTask(task.id)} className="ml-auto cursor-pointer text-black hover:text-red-500 transition text-xl"
-                            >
-                                🗑️
-                            </span>
-                        </li>
-                    ))}
-                </ul>
-                <div className="p-4 text-gray-500 border-t text-sm"> {tasks.length == 0 ? 'No' : tasks.length} item{tasks.length !== 1 ? 's' : ''} left</div>
-                <button 
-                        onClick={clearAllTasks} 
-                        className="bg-blue-500 text-white font bold px-4 py-2 rounded-md hover:bg-blue-600 transition"
-                    >
-                        Clear
+
+return (
+    <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light">
+        <div className="card shadow-lg p-3 bg-white rounded w-100" style={{ maxWidth: "400px" }}>
+            <h1 className="text-center text-secondary mb-4">ToDos</h1>
+
+            
+            <div className="input-group mb-3">
+                <input 
+                    type="text" 
+                    className="form-control" 
+                    placeholder="Add a task" 
+                    value={entry}
+                    onChange={(e) => setEntry(e.target.value)}
+                />
+                <button className="btn btn-primary" onClick={addTask}>
+                    Add
                 </button>
             </div>
+
+            
+            <ul className="list-group">
+                {tasks.map((task) => (
+                    <li key={task.id} className="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{task.label}</span>
+                        <button className="btn btn-sm text-dark" onClick={() => removeTask(task.id)}>
+                        <i class="fa-solid fa-trash fa-lg"></i>
+                        </button>
+                    </li>
+                ))}
+            </ul>
+
+            
+            <div className="text-center mt-3 text-muted">
+                {tasks.length === 0 ? "No items left" : `${tasks.length} item(s) left`}
+            </div>
+
+            
+            <button className="btn btn-danger w-100 mt-3" onClick={clearAllTasks}>
+                Clear All
+            </button>
         </div>
-    );
+    </div>
+);
 };
 
 export default Home;

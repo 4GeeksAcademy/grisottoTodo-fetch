@@ -9,7 +9,7 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
-body {
+/*body {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -50,6 +50,7 @@ button {
 
 button:hover {
     background-color: #0056b3;
+
 }
 
 
@@ -73,6 +74,7 @@ li {
     
     font-size: 1.5rem;
     transition: color 0.3s ease-in-out;
+    
 }
 
 
